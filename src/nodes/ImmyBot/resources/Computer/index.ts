@@ -252,7 +252,8 @@ export const computerFields: INodeProperties[] = [
 				name: 'name',
 				type: 'string',
 				default: '',
-				description: 'Filter by computer name',
+				description: 'Filter by computer name (case-insensitive partial match)',
+				placeholder: 'DESKTOP or {{ $json.searchTerm }}',
 			},
 			{
 				displayName: 'Tenant',

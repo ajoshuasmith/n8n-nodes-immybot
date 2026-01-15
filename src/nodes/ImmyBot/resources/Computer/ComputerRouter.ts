@@ -52,18 +52,32 @@ export async function computerRouter(
 		const filters = this.getNodeParameter('filters', index, {}) as IDataObject;
 		const qs: IDataObject = {};
 
+		// Build Sieve filter string
+		const sieveFilters: string[] = [];
+
 		if (filters.name) {
-			qs.name = filters.name as string;
+			// Use @=* for case-insensitive contains
+			sieveFilters.push(`Name@=*${filters.name}`);
 		}
 
 		if (filters.tenantId) {
-			qs.tenantId = getResourceLocatorValue(filters.tenantId as string | IDataObject);
+			// Use == for exact match
+			const tenantId = getResourceLocatorValue(filters.tenantId as string | IDataObject);
+			sieveFilters.push(`TenantId==${tenantId}`);
 		}
 
+		// Add Sieve filters to query string
+		if (sieveFilters.length > 0) {
+			qs.filters = sieveFilters.join(',');
+		}
+
+		// Build Sieve sort string
 		if (filters.orderByUpdatedDate) {
-			qs.orderByUpdatedDate = filters.orderByUpdatedDate;
+			// Use -UpdatedDate for descending sort (most recent first)
+			qs.sorts = '-UpdatedDate';
 		}
 
+		// Pagination
 		if (!returnAll) {
 			const limit = this.getNodeParameter('limit', index, 50);
 			qs.pageSize = limit;
