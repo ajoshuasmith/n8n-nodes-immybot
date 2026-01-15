@@ -52,29 +52,21 @@ export async function computerRouter(
 		const filters = this.getNodeParameter('filters', index, {}) as IDataObject;
 		const qs: IDataObject = {};
 
-		// Build Sieve filter string
-		const sieveFilters: string[] = [];
-
+		// Computer endpoint uses simple query parameters, NOT Sieve syntax
 		if (filters.name) {
-			// Use @=* for case-insensitive contains with lowercase property name
-			sieveFilters.push(`name@=*${filters.name}`);
+			// Direct name parameter (case-insensitive partial match on server)
+			qs.name = filters.name;
 		}
 
 		if (filters.tenantId) {
-			// Use == for exact match with lowercase property name
+			// Direct tenantId parameter (exact match)
 			const tenantId = getResourceLocatorValue(filters.tenantId as string | IDataObject);
-			sieveFilters.push(`tenantId==${tenantId}`);
+			qs.tenantId = parseInt(tenantId, 10);
 		}
 
-		// Add Sieve filters to query string
-		if (sieveFilters.length > 0) {
-			qs.filters = sieveFilters.join(',');
-		}
-
-		// Build Sieve sort string
 		if (filters.orderByUpdatedDate) {
-			// Use -updatedDate for descending sort (most recent first)
-			qs.sorts = '-updatedDate';
+			// Boolean to sort by updated date (descending)
+			qs.orderByUpdatedDate = true;
 		}
 
 		// Pagination

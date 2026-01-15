@@ -1,6 +1,6 @@
 {
   "name": "@joshuanode/n8n-nodes-immybot",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "n8n community node for ImmyBot IT automation and management platform",
   "keywords": [
     "n8n-community-node-package",

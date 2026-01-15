@@ -67,17 +67,17 @@ export async function userRouter(
 			sieveFilters.push(`tenantId==${tenantId}`);
 		}
 
-		if (filters.isAdmin) {
+		if (filters.isAdmin !== undefined && filters.isAdmin !== '') {
 			// Boolean filter - exact match
 			sieveFilters.push(`isAdmin==${filters.isAdmin}`);
 		}
 
-		if (filters.isSupportTechnician) {
+		if (filters.isSupportTechnician !== undefined && filters.isSupportTechnician !== '') {
 			// Boolean filter - exact match
 			sieveFilters.push(`isSupportTechnician==${filters.isSupportTechnician}`);
 		}
 
-		if (filters.emailConfirmed) {
+		if (filters.emailConfirmed !== undefined && filters.emailConfirmed !== '') {
 			// Boolean filter - exact match
 			sieveFilters.push(`emailConfirmed==${filters.emailConfirmed}`);
 		}

@@ -50,12 +50,12 @@ export async function tenantRouter(
 			sieveFilters.push(`name@=*${filters.name}`);
 		}
 
-		if (filters.active) {
+		if (filters.active !== undefined && filters.active !== '') {
 			// Boolean filter - exact match
 			sieveFilters.push(`active==${filters.active}`);
 		}
 
-		if (filters.isMsp) {
+		if (filters.isMsp !== undefined && filters.isMsp !== '') {
 			// Boolean filter - exact match
 			sieveFilters.push(`isMsp==${filters.isMsp}`);
 		}
