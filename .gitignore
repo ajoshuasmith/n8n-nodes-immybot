@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+.vscode/
+.idea/
+*.tsbuildinfo
+.npm-cache/
+*.tgz
+v1swagger.json

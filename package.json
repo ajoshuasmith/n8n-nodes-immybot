@@ -1,0 +1,61 @@
+{
+  "name": "@joshuanode/n8n-nodes-immybot",
+  "version": "0.0.7",
+  "description": "n8n community node for ImmyBot IT automation and management platform",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "immybot",
+    "rmm",
+    "it-automation",
+    "msp"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ajoshuasmith/n8n-nodes-immybot#readme",
+  "author": {
+    "name": "Joshua",
+    "email": "your-email@example.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajoshuasmith/n8n-nodes-immybot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ajoshuasmith/n8n-nodes-immybot/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && npm run copy-icons",
+    "copy-icons": "cp src/nodes/ImmyBot/immybot.png dist/nodes/ImmyBot/ && cp src/credentials/immybot.png dist/credentials/",
+    "test": "echo \"No tests yet\"",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/ImmyDotBotOAuth2Api.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/ImmyBot/ImmyBot.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "n8n-node-dev": "^1.0.0",
+    "n8n-workflow": "*",
+    "typescript": "^5.3.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
