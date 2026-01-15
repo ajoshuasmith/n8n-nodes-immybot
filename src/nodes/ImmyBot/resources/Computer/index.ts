@@ -233,6 +233,21 @@ export const computerFields: INodeProperties[] = [
 		description: 'Max number of results to return',
 	},
 
+	// Notice about filtering
+	{
+		displayName: '',
+		name: 'filtersNotice',
+		type: 'notice',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['computer'],
+				operation: ['getMany'],
+			},
+		},
+		description: '<strong>💡 Filtering Tips</strong><br>• Use filters below to reduce data at the API level<br>• For additional filtering (online/offline, maintenance status), use the <strong>Filter</strong> node after this node<br>• All computer properties are available in the response for client-side filtering',
+	},
+
 	// Filters for Get Many
 	{
 		displayName: 'Filters',
@@ -240,6 +255,7 @@ export const computerFields: INodeProperties[] = [
 		type: 'collection',
 		placeholder: 'Add Filter',
 		default: {},
+		description: 'Server-side filters to reduce data transfer. Only matching computers will be returned.',
 		displayOptions: {
 			show: {
 				resource: ['computer'],
@@ -252,8 +268,9 @@ export const computerFields: INodeProperties[] = [
 				name: 'name',
 				type: 'string',
 				default: '',
-				description: 'Filter by computer name (case-insensitive partial match)',
-				placeholder: 'DESKTOP or {{ $json.searchTerm }}',
+				placeholder: 'e.g. DESKTOP, Server, {{ $json.searchTerm }}',
+				description: 'Search for computers by name. Finds computers where the name contains this text (case-insensitive).',
+				hint: 'Partial match - searches anywhere in computer name. Example: "DESKTOP" matches "DESKTOP-001", "MyDESKTOP", etc.',
 			},
 			{
 				displayName: 'Tenant',
@@ -286,14 +303,16 @@ export const computerFields: INodeProperties[] = [
 						placeholder: '12345',
 					},
 				],
-				description: 'Filter by tenant',
+				description: 'Filter to show only computers from a specific tenant',
+				hint: 'Select a tenant to narrow results. Leave empty to show computers from all tenants.',
 			},
 			{
 				displayName: 'Order by Updated Date',
 				name: 'orderByUpdatedDate',
 				type: 'boolean',
 				default: false,
-				description: 'Whether to order results by updated date',
+				description: 'Whether to sort results by most recently updated computers first',
+				hint: 'When enabled, shows recently modified computers at the top of results',
 			},
 		],
 	},
