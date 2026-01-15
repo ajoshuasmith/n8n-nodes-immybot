@@ -9,23 +9,15 @@ This is an n8n community node for [ImmyBot](https://immy.bot), the intelligent I
 
 ## Features
 
-| Feature | Description |
-|---------|-------------|
-| **Computer Management** | Complete computer lifecycle management with 20+ operations including inventory, status monitoring, and configuration |
-| **Change Request Workflow** | Full change request approval workflow with approve, deny, require changes, and commenting capabilities |
-| **Multi-Tenant Support** | Manage computers and resources across multiple tenants with tenant-specific operations |
-| **Dynamic Dropdowns** | Resource locators with searchable dropdowns for computers, tenants, persons, tags, users, and more |
-| **Multi-Select Pickers** | Visual multi-select dropdowns for bulk operations - select multiple computers, tags, or persons with dynamic API-loaded lists |
-| **Server-Side Filtering** | Filter computers by name and tenant directly at the API level to reduce data transfer and improve performance |
-| **Tag Management** | Bulk add/remove tags to organize and categorize computers |
-| **Maintenance Operations** | Monitor and retrieve maintenance actions and session data |
-| **Software Management** | Comprehensive local and global software operations including create, retrieve, and delete with pagination |
-| **User Management** | Full user lifecycle including creation, roles, permissions, and access control with 12 operations |
-| **Sync Operations** | Trigger Azure user sync and user affinity sync across tenants |
-| **Script Management** | Query and manage deployment and inventory scripts |
-| **Person Management** | Associate users with computers and manage primary/additional persons |
-| **Bulk Operations** | Efficiently manage multiple computers and users with bulk delete, restore, and tenant change operations |
-| **Pagination Controls** | All list operations support Return All or configurable limits (max 500) to handle large datasets efficiently |
+- **Computer Management** - 20+ operations for inventory, status monitoring, configuration, and bulk actions
+- **Change Request Workflow** - Approve, deny, require changes, and comment on change requests
+- **Multi-Tenant Support** - Manage resources across multiple tenants
+- **Multi-Select Pickers** - Visual dropdowns for bulk operations with dynamic API-loaded lists
+- **Server-Side Filtering** - Filter by name and tenant at the API level to reduce data transfer
+- **Software & Script Management** - Manage global/local software and deployment scripts with pagination
+- **User Management** - 12 operations for user lifecycle, roles, permissions, and access control
+- **Tag & Person Management** - Organize computers with tags and associate users
+- **Sync Operations** - Trigger Azure user sync and user affinity sync
 
 ## Installation
 
@@ -191,107 +183,30 @@ For detailed setup instructions, see the [ImmyBot API Documentation](https://doc
 
 ## Usage Examples
 
-### Example 1: Monitor Computer Health
-
+**Monitor Computer Health**
 ```
-Trigger (Schedule) → ImmyBot (Computer: Get Many) → Filter (Status = Offline) → Send Alert
-```
-
-This workflow runs on a schedule, retrieves all computers, filters for offline devices, and sends alerts.
-
-### Example 2: Automated Tagging
-
-```
-Webhook → ImmyBot (Computer: Get by ID) → Conditional → ImmyBot (Computer: Add Tags)
+Schedule → Get Many Computers → Filter (Offline) → Send Alert
 ```
 
-When a webhook is triggered, fetch computer details and automatically apply tags based on conditions.
-
-### Example 3: Software Inventory Report
-
+**Software Inventory Report**
 ```
-Schedule → ImmyBot (Computer: Get Many) → ImmyBot (Computer: Get Detected Software) → Export to CSV
+Schedule → Get Many Computers → Get Detected Software → Export CSV
 ```
 
-Generate regular reports of installed software across all managed computers.
-
-### Example 4: Bulk Tenant Migration
-
+**Bulk Tenant Migration**
 ```
-Manual Trigger → ImmyBot (Computer: Get Many, Filter by Tenant) → ImmyBot (Computer: Change Tenant)
+Manual Trigger → Get Many Computers (Filter by Tenant) → Change Tenant
 ```
 
-Move multiple computers from one tenant to another with a single workflow execution.
+## Additional Details
 
-## Architecture
+**Resource Locators** - All ID-based parameters support three input modes: searchable dropdown (From List), direct ID entry (By ID), or URL extraction (By URL for computers).
 
-```
-┌─────────────┐         ┌──────────────┐         ┌─────────────────┐
-│  n8n        │         │  ImmyBot     │         │  ImmyBot API    │
-│  Workflow   │────────▶│  Node        │────────▶│  v1             │
-│             │         │              │         │                 │
-└─────────────┘         └──────────────┘         └─────────────────┘
-                               │
-                               │
-                        ┌──────▼──────┐
-                        │  Resource   │
-                        │  Locators & │
-                        │  List Search│
-                        └─────────────┘
-```
+**Server-Side Filtering** - Filter computers by name and tenant at the API level. For additional filtering (online/offline status, etc.), use n8n's Filter node after retrieving data.
 
-## Features in Detail
+**Multi-Select Pickers** - Bulk operations feature visual multi-select dropdowns for computers, tags, and persons, loaded dynamically from your ImmyBot instance.
 
-### Resource Locators
-
-All ID-based parameters use resource locators with three modes:
-
-- **From List**: Searchable dropdown populated from your ImmyBot instance
-- **By ID**: Direct numeric ID input with validation
-- **By URL**: Extract ID from ImmyBot URLs (for Computer resource)
-
-### Filtering & Pagination
-
-List operations support:
-
-- **Return All**: Retrieve all results (use with caution for large datasets)
-- **Limit**: Specify maximum number of results to return (1-500)
-- **Server-Side Filters**:
-  - **Name**: Filter computers by name (supports partial matching)
-  - **Tenant**: Filter by specific tenant to reduce data transfer
-  - **Order by Updated Date**: Sort by most recently updated computers
-
-**Note**: For additional filtering (online/offline status, maintenance exclusion, etc.), use n8n's built-in **Filter** node after the ImmyBot node. All computer fields are available in the response data for client-side filtering.
-
-### Multi-Select Pickers
-
-Bulk operations now feature visual multi-select dropdowns:
-
-- **Computer Selection**: Choose multiple computers from a searchable list loaded from your ImmyBot instance
-- **Tag Selection**: Select multiple tags with real-time search and filtering
-- **Person Selection**: Pick multiple persons from your organization's directory
-- **Dynamic Loading**: All options are fetched from your ImmyBot API in real-time
-- **Better UX**: No more comma-separated IDs - visual selection prevents typos and errors
-
-### Error Handling
-
-The node implements proper error handling and supports n8n's **Continue on Fail** mode, allowing workflows to proceed even when individual operations fail.
-
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Build the node
-npm run build
-
-# Lint the code
-npm run lint
-
-# Lint and fix issues
-npm run lintfix
-```
+**Pagination** - All list operations support "Return All" or configurable limits (1-500) to efficiently handle large datasets.
 
 ## Resources
 
