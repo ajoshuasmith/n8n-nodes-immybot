@@ -56,14 +56,14 @@ export async function computerRouter(
 		const sieveFilters: string[] = [];
 
 		if (filters.name) {
-			// Use @=* for case-insensitive contains
-			sieveFilters.push(`Name@=*${filters.name}`);
+			// Use @=* for case-insensitive contains with lowercase property name
+			sieveFilters.push(`name@=*${filters.name}`);
 		}
 
 		if (filters.tenantId) {
-			// Use == for exact match
+			// Use == for exact match with lowercase property name
 			const tenantId = getResourceLocatorValue(filters.tenantId as string | IDataObject);
-			sieveFilters.push(`TenantId==${tenantId}`);
+			sieveFilters.push(`tenantId==${tenantId}`);
 		}
 
 		// Add Sieve filters to query string
@@ -73,8 +73,8 @@ export async function computerRouter(
 
 		// Build Sieve sort string
 		if (filters.orderByUpdatedDate) {
-			// Use -UpdatedDate for descending sort (most recent first)
-			qs.sorts = '-UpdatedDate';
+			// Use -updatedDate for descending sort (most recent first)
+			qs.sorts = '-updatedDate';
 		}
 
 		// Pagination
