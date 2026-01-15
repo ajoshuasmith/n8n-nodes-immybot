@@ -26,11 +26,53 @@ export async function personRouter(
 
 	if (operation === 'getMany') {
 		const returnAll = this.getNodeParameter('returnAll', index, false);
+		const filters = this.getNodeParameter('filters', index, {}) as IDataObject;
 		const qs: IDataObject = {};
 
+		// Build Sieve filter string
+		const sieveFilters: string[] = [];
+
+		if (filters.firstName) {
+			// Use @=* for case-insensitive contains
+			sieveFilters.push(`firstName@=*${filters.firstName}`);
+		}
+
+		if (filters.lastName) {
+			// Use @=* for case-insensitive contains
+			sieveFilters.push(`lastName@=*${filters.lastName}`);
+		}
+
+		if (filters.emailAddress) {
+			// Use @=* for case-insensitive contains
+			sieveFilters.push(`emailAddress@=*${filters.emailAddress}`);
+		}
+
+		if (filters.displayName) {
+			// Use @=* for case-insensitive contains
+			sieveFilters.push(`displayName@=*${filters.displayName}`);
+		}
+
+		if (filters.tenantId) {
+			// Integer filter - exact match
+			const tenantId = getResourceLocatorValue(filters.tenantId as string | IDataObject);
+			sieveFilters.push(`tenantId==${tenantId}`);
+		}
+
+		// Add Sieve filters to query string (PascalCase param name)
+		if (sieveFilters.length > 0) {
+			qs.Filters = sieveFilters.join(',');
+		}
+
+		// Build Sieve sort string
+		if (filters.sortBy) {
+			// Use the sortBy value directly (already includes - prefix for descending)
+			qs.Sorts = filters.sortBy as string;
+		}
+
+		// Pagination (PascalCase param name)
 		if (!returnAll) {
 			const limit = this.getNodeParameter('limit', index, 50);
-			qs.pageSize = limit;
+			qs.PageSize = limit;
 		}
 
 		const response = (await this.helpers.httpRequest({

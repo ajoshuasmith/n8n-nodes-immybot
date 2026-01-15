@@ -164,6 +164,202 @@ export const userFields: INodeProperties[] = [
 		description: 'Max number of results to return',
 	},
 
+	// Notice about filtering
+	{
+		displayName: '',
+		name: 'filtersNotice',
+		type: 'notice',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['user'],
+				operation: ['getMany'],
+			},
+		},
+		description:
+			'<strong>💡 Filtering Tips</strong><br>• Use filters below to reduce data at the API level<br>• Combine filters to find specific users (e.g., admins in a specific tenant)<br>• All user properties are available in the response for additional filtering',
+	},
+
+	// Filters for Get Many
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		description: 'Server-side filters to reduce data transfer. Only matching users will be returned.',
+		displayOptions: {
+			show: {
+				resource: ['user'],
+				operation: ['getMany'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Email',
+				name: 'email',
+				type: 'string',
+				default: '',
+				placeholder: 'e.g. john@company.com, {{ $json.email }}',
+				description:
+					'Search for users by email address. Finds users where the email contains this text (case-insensitive).',
+				hint: 'Partial match - searches anywhere in email. Example: "company.com" matches all users from that domain.',
+			},
+			{
+				displayName: 'Display Name',
+				name: 'displayName',
+				type: 'string',
+				default: '',
+				placeholder: 'e.g. John Doe, {{ $json.userName }}',
+				description:
+					'Search for users by display name. Finds users where the name contains this text (case-insensitive).',
+				hint: 'Partial match - searches anywhere in display name. Example: "John" matches "John Doe", "Johnny Smith", etc.',
+			},
+			{
+				displayName: 'Tenant',
+				name: 'tenantId',
+				type: 'resourceLocator',
+				default: { mode: 'list', value: '' },
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						typeOptions: {
+							searchListMethod: 'getTenants',
+							searchable: true,
+						},
+					},
+					{
+						displayName: 'By ID',
+						name: 'id',
+						type: 'string',
+						validation: [
+							{
+								type: 'regex',
+								properties: {
+									regex: '^\\d+$',
+									errorMessage: 'Must be a numeric ID',
+								},
+							},
+						],
+						placeholder: '12345',
+					},
+				],
+				description: 'Filter to show only users from a specific tenant',
+				hint: 'Narrow results to users belonging to a particular organization or tenant.',
+			},
+			{
+				displayName: 'Admin Users',
+				name: 'isAdmin',
+				type: 'options',
+				options: [
+					{
+						name: 'All',
+						value: '',
+					},
+					{
+						name: 'Admins Only',
+						value: 'true',
+					},
+					{
+						name: 'Non-Admins Only',
+						value: 'false',
+					},
+				],
+				default: '',
+				description: 'Filter by admin status',
+				hint: 'Admin users have elevated permissions across the system.',
+			},
+			{
+				displayName: 'Support Technicians',
+				name: 'isSupportTechnician',
+				type: 'options',
+				options: [
+					{
+						name: 'All',
+						value: '',
+					},
+					{
+						name: 'Support Technicians Only',
+						value: 'true',
+					},
+					{
+						name: 'Non-Support Only',
+						value: 'false',
+					},
+				],
+				default: '',
+				description: 'Filter by support technician status',
+				hint: 'Support technicians have special permissions for troubleshooting and support tasks.',
+			},
+			{
+				displayName: 'Email Confirmed',
+				name: 'emailConfirmed',
+				type: 'options',
+				options: [
+					{
+						name: 'All',
+						value: '',
+					},
+					{
+						name: 'Confirmed Only',
+						value: 'true',
+					},
+					{
+						name: 'Unconfirmed Only',
+						value: 'false',
+					},
+				],
+				default: '',
+				description: 'Filter by email confirmation status',
+				hint: 'Users must confirm their email address before full account activation.',
+			},
+			{
+				displayName: 'Sort By',
+				name: 'sortBy',
+				type: 'options',
+				options: [
+					{
+						name: 'Display Name (A-Z)',
+						value: 'displayName',
+					},
+					{
+						name: 'Display Name (Z-A)',
+						value: '-displayName',
+					},
+					{
+						name: 'Email (A-Z)',
+						value: 'email',
+					},
+					{
+						name: 'Email (Z-A)',
+						value: '-email',
+					},
+					{
+						name: 'Created Date (Oldest First)',
+						value: 'createdDate',
+					},
+					{
+						name: 'Created Date (Newest First)',
+						value: '-createdDate',
+					},
+					{
+						name: 'Updated Date (Oldest First)',
+						value: 'updatedDate',
+					},
+					{
+						name: 'Updated Date (Newest First)',
+						value: '-updatedDate',
+					},
+				],
+				default: 'displayName',
+				description: 'Sort results by a specific field',
+				hint: 'Choose how to order the results. Prefix with "-" means descending order.',
+			},
+		],
+	},
+
 	// Update Fields
 	{
 		displayName: 'Update Fields',

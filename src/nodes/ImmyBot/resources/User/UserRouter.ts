@@ -45,11 +45,58 @@ export async function userRouter(
 
 	if (operation === 'getMany') {
 		const returnAll = this.getNodeParameter('returnAll', index, false);
+		const filters = this.getNodeParameter('filters', index, {}) as IDataObject;
 		const qs: IDataObject = {};
 
+		// Build Sieve filter string
+		const sieveFilters: string[] = [];
+
+		if (filters.email) {
+			// Use @=* for case-insensitive contains
+			sieveFilters.push(`email@=*${filters.email}`);
+		}
+
+		if (filters.displayName) {
+			// Use @=* for case-insensitive contains
+			sieveFilters.push(`displayName@=*${filters.displayName}`);
+		}
+
+		if (filters.tenantId) {
+			// Integer filter - exact match
+			const tenantId = getResourceLocatorValue(filters.tenantId as string | IDataObject);
+			sieveFilters.push(`tenantId==${tenantId}`);
+		}
+
+		if (filters.isAdmin) {
+			// Boolean filter - exact match
+			sieveFilters.push(`isAdmin==${filters.isAdmin}`);
+		}
+
+		if (filters.isSupportTechnician) {
+			// Boolean filter - exact match
+			sieveFilters.push(`isSupportTechnician==${filters.isSupportTechnician}`);
+		}
+
+		if (filters.emailConfirmed) {
+			// Boolean filter - exact match
+			sieveFilters.push(`emailConfirmed==${filters.emailConfirmed}`);
+		}
+
+		// Add Sieve filters to query string (PascalCase param name)
+		if (sieveFilters.length > 0) {
+			qs.Filters = sieveFilters.join(',');
+		}
+
+		// Build Sieve sort string
+		if (filters.sortBy) {
+			// Use the sortBy value directly (already includes - prefix for descending)
+			qs.Sorts = filters.sortBy as string;
+		}
+
+		// Pagination (PascalCase param name)
 		if (!returnAll) {
 			const limit = this.getNodeParameter('limit', index, 50) as number;
-			qs.pageSize = limit;
+			qs.PageSize = limit;
 		}
 
 		const response = (await this.helpers.httpRequest({
