@@ -129,11 +129,23 @@ export async function computerRouter(
 
 	if (operation === 'getStatus') {
 		const computerId = getResourceLocatorValue(this.getNodeParameter('computerId', index) as string | IDataObject);
-		return await this.helpers.httpRequest({
+		const isOnline = await this.helpers.httpRequest({
 			...auth,
 			method: 'GET',
 			url: `/api/v1/computers/${computerId}/status`,
 		});
+		// Return as object for better usability in n8n
+		return { computerId: parseInt(computerId, 10), isOnline };
+	}
+
+	if (operation === 'getOnboarding') {
+		const response = (await this.helpers.httpRequest({
+			...auth,
+			method: 'GET',
+			url: '/api/v1/computers/onboarding',
+		})) as IDataObject[];
+
+		return response;
 	}
 
 	if (operation === 'getEvents') {
@@ -330,6 +342,38 @@ export async function computerRouter(
 				computerIds,
 			},
 		});
+	}
+
+	if (operation === 'searchInventorySoftware') {
+		const searchQuery = this.getNodeParameter('softwareSearchQuery', index) as string;
+		const searchMode = this.getNodeParameter('softwareSearchMode', index) as number;
+		const searchOptions = this.getNodeParameter('softwareSearchOptions', index, {}) as IDataObject;
+
+		const qs: IDataObject = {
+			q: searchQuery,
+			searchMode,
+		};
+
+		// Determine which endpoint to use
+		let endpoint = '/api/v1/computers/inventory-software/search-by-name';
+
+		if (searchOptions.includeAll) {
+			endpoint = '/api/v1/computers/all-inventory-software/search-by-name';
+		}
+
+		if (searchOptions.tenantId) {
+			const tenantId = getResourceLocatorValue(searchOptions.tenantId as string | IDataObject);
+			qs.tenantId = parseInt(tenantId, 10);
+		}
+
+		const response = (await this.helpers.httpRequest({
+			...auth,
+			method: 'GET',
+			url: endpoint,
+			qs,
+		})) as IDataObject[];
+
+		return response;
 	}
 
 	if (operation === 'reinventory') {

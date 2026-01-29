@@ -12,6 +12,7 @@ import { computerOperations, computerFields } from './resources/Computer';
 import { tenantOperations, tenantFields } from './resources/Tenant';
 import { softwareOperations, softwareFields } from './resources/Software';
 import { maintenanceActionOperations, maintenanceActionFields } from './resources/MaintenanceAction';
+import { maintenanceSessionOperations, maintenanceSessionFields } from './resources/MaintenanceSession';
 import { personOperations, personFields } from './resources/Person';
 import { scriptOperations, scriptFields } from './resources/Script';
 import { tagOperations, tagFields } from './resources/Tag';
@@ -66,6 +67,10 @@ export class ImmyBot implements INodeType {
 						value: 'maintenanceAction',
 					},
 					{
+						name: 'Maintenance Session',
+						value: 'maintenanceSession',
+					},
+					{
 						name: 'Person',
 						value: 'person',
 					},
@@ -106,6 +111,8 @@ export class ImmyBot implements INodeType {
 			...softwareFields,
 			...maintenanceActionOperations,
 			...maintenanceActionFields,
+			...maintenanceSessionOperations,
+			...maintenanceSessionFields,
 			...personOperations,
 			...personFields,
 			...scriptOperations,
@@ -386,6 +393,16 @@ export class ImmyBot implements INodeType {
 						'./resources/MaintenanceAction/MaintenanceActionRouter'
 					);
 					const result = await maintenanceActionRouter.call(this, i, operation as string);
+					const executionData = this.helpers.constructExecutionMetaData(
+						this.helpers.returnJsonArray(result),
+						{ itemData: { item: i } },
+					);
+					returnData.push(...executionData);
+				} else if (resource === 'maintenanceSession') {
+					const { maintenanceSessionRouter } = await import(
+						'./resources/MaintenanceSession/MaintenanceSessionRouter'
+					);
+					const result = await maintenanceSessionRouter.call(this, i, operation as string);
 					const executionData = this.helpers.constructExecutionMetaData(
 						this.helpers.returnJsonArray(result),
 						{ itemData: { item: i } },

@@ -73,6 +73,12 @@ export const computerOperations: INodeProperties[] = [
 				action: 'Get many computers',
 			},
 			{
+				name: 'Get Onboarding',
+				value: 'getOnboarding',
+				description: 'Get computers that are pending onboarding',
+				action: 'Get onboarding computers',
+			},
+			{
 				name: 'Get Status',
 				value: 'getStatus',
 				description: 'Get status of a computer',
@@ -101,6 +107,12 @@ export const computerOperations: INodeProperties[] = [
 				value: 'restore',
 				description: 'Restore deleted computers',
 				action: 'Restore computers',
+			},
+			{
+				name: 'Search Inventory Software',
+				value: 'searchInventorySoftware',
+				description: 'Search for software installed across all computers',
+				action: 'Search inventory software',
 			},
 			{
 				name: 'Set to Needs Onboarding',
@@ -560,6 +572,107 @@ export const computerFields: INodeProperties[] = [
 				type: 'number',
 				default: 50,
 				description: 'Maximum number of events to return',
+			},
+		],
+	},
+
+	// Search Inventory Software
+	{
+		displayName: 'Search Query',
+		name: 'softwareSearchQuery',
+		type: 'string',
+		default: '',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['computer'],
+				operation: ['searchInventorySoftware'],
+			},
+		},
+		description: 'Software name to search for',
+		placeholder: 'e.g., Chrome, Office, Adobe',
+	},
+	{
+		displayName: 'Search Mode',
+		name: 'softwareSearchMode',
+		type: 'options',
+		options: [
+			{
+				name: 'Contains',
+				value: 0,
+				description: 'Search for software names containing the query',
+			},
+			{
+				name: 'Regex',
+				value: 1,
+				description: 'Use a regular expression pattern',
+			},
+			{
+				name: 'Traditional',
+				value: 2,
+				description: 'Traditional search mode',
+			},
+		],
+		default: 0,
+		displayOptions: {
+			show: {
+				resource: ['computer'],
+				operation: ['searchInventorySoftware'],
+			},
+		},
+		description: 'How to match the search query',
+	},
+	{
+		displayName: 'Search Options',
+		name: 'softwareSearchOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['computer'],
+				operation: ['searchInventorySoftware'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Tenant',
+				name: 'tenantId',
+				type: 'resourceLocator',
+				default: { mode: 'list', value: '' },
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						typeOptions: {
+							searchListMethod: 'getTenants',
+							searchable: true,
+						},
+					},
+					{
+						displayName: 'By ID',
+						name: 'id',
+						type: 'string',
+						validation: [
+							{
+								type: 'regex',
+								properties: {
+									regex: '^\\d+$',
+									errorMessage: 'Must be a numeric ID',
+								},
+							},
+						],
+					},
+				],
+				description: 'Filter results to a specific tenant',
+			},
+			{
+				displayName: 'Include All Software',
+				name: 'includeAll',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to search all software including system components (uses slower but more comprehensive endpoint)',
 			},
 		],
 	},
