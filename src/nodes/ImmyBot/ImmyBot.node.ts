@@ -241,26 +241,47 @@ export class ImmyBot implements INodeType {
 			},
 
 			async getSoftware(this: ILoadOptionsFunctions, filter?: string): Promise<INodeListSearchResult> {
-		const auth = await getImmyBotAuth(this);
-				const results: Array<{ name: string; value: string }> = [];
+				const auth = await getImmyBotAuth(this);
+				const results: Array<{ name: string; value: string; url?: string }> = [];
 
-				const software = await this.helpers.httpRequest({
-				...auth,
-					method: 'GET',
-					url: '/api/v1/software',
-				});
+				// Fetch both local and global software
+				const [localSoftware, globalSoftware] = await Promise.all([
+					this.helpers.httpRequest({
+						...auth,
+						method: 'GET',
+						url: '/api/v1/software/local',
+					}),
+					this.helpers.httpRequest({
+						...auth,
+						method: 'GET',
+						url: '/api/v1/software/global',
+					}),
+				]);
 
-				const filteredSoftware = filter
-					? (software as IDataObject[]).filter((s) =>
-							(s.name as string).toLowerCase().includes(filter.toLowerCase()),
-					  )
-					: (software as IDataObject[]);
+				// Process local software
+				for (const sw of localSoftware as IDataObject[]) {
+					const name = sw.name as string;
+					const identifier = sw.softwareIdentifier as string;
+					if (!filter || name.toLowerCase().includes(filter.toLowerCase())) {
+						results.push({
+							name: `${name} (Local)`,
+							value: identifier,
+							url: `Software identifier: ${identifier}`,
+						});
+					}
+				}
 
-				for (const sw of filteredSoftware) {
-					results.push({
-						name: sw.name as string,
-						value: (sw.id as number).toString(),
-					});
+				// Process global software
+				for (const sw of globalSoftware as IDataObject[]) {
+					const name = sw.name as string;
+					const identifier = sw.softwareIdentifier as string;
+					if (!filter || name.toLowerCase().includes(filter.toLowerCase())) {
+						results.push({
+							name: `${name} (Global)`,
+							value: identifier,
+							url: `Software identifier: ${identifier}`,
+						});
+					}
 				}
 
 				return { results };
