@@ -261,8 +261,8 @@ export class ImmyBot implements INodeType {
 				// Process local software
 				for (const sw of localSoftware as IDataObject[]) {
 					const name = sw.name as string;
-					const identifier = sw.softwareIdentifier as string;
-					if (!filter || name.toLowerCase().includes(filter.toLowerCase())) {
+					const identifier = sw.identifier as string;
+					if (name && identifier && (!filter || name.toLowerCase().includes(filter.toLowerCase()))) {
 						results.push({
 							name: `${name} (Local)`,
 							value: identifier,
@@ -274,8 +274,8 @@ export class ImmyBot implements INodeType {
 				// Process global software
 				for (const sw of globalSoftware as IDataObject[]) {
 					const name = sw.name as string;
-					const identifier = sw.softwareIdentifier as string;
-					if (!filter || name.toLowerCase().includes(filter.toLowerCase())) {
+					const identifier = sw.identifier as string;
+					if (name && identifier && (!filter || name.toLowerCase().includes(filter.toLowerCase()))) {
 						results.push({
 							name: `${name} (Global)`,
 							value: identifier,
