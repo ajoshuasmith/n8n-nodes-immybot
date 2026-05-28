@@ -67,10 +67,10 @@ export const maintenanceSessionFields: INodeProperties[] = [
 				},
 			},
 			{
-				displayName: 'By Identifier',
+				displayName: 'By ID or Identifier',
 				name: 'id',
 				type: 'string',
-				placeholder: 'e.g., google-chrome',
+				placeholder: 'e.g., 312 or google-chrome',
 			},
 		],
 		displayOptions: {
